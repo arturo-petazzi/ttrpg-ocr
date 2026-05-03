@@ -1,3 +1,6 @@
+from common.pipeline import pipeline, step
+
+@pipeline()
 def main():
     print("Hello from pdf-reader!")
 
