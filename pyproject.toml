@@ -1,12 +1,29 @@
 [project]
-name = "pdf-reader"
+name = "ttrpg-ocr"
 version = "0.1.0"
-description = "Add your description here"
+description = "OCR pipeline for extracting structured text from scanned TTRPG rulebooks"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "common",
+    "jiwer>=4.0.0",
+    "numpy>=2.4.4",
+    "opencv-python>=4.13.0.92",
+    "pandas>=3.0.2",
+    "pillow>=12.2.0",
+    "pydantic>=2.13.3",
+    "pymupdf>=1.27.2.3",
+    "pytesseract>=0.3.13",
+    "pyyaml>=6.0.3",
+    "tqdm>=4.67.3",
 ]
 
 [tool.uv.sources]
 common = { path = "../common", editable = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+ttrpg-ocr = "ttrpg_ocr.pipeline:main"

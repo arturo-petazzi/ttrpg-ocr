@@ -22,3 +22,8 @@ build/
 dist/
 wheels/
 *.egg-info
+
+# Project specific
+data/raw/
+data/processed/
+*.pdf
