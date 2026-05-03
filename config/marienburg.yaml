@@ -1,0 +1,12 @@
+name: WFRP - Marienburg Sold Down The River
+dpi: 150
+has_header: true
+header_height_pct: 0.08
+has_decorative_frame: false  # set true after Phase 0 if you find one
+column_count: 2
+column_gutter_min_px: 40
+min_image_area_px: 30000
+body_psm: 6
+sidebar_psm: 4
+tesseract_lang: eng
+drop_pages: [0, 1]  # cover + title; revise after inspection
