@@ -18,6 +18,7 @@ Build a Python pipeline that takes a scanned TTRPG rulebook or adventure module 
 - Inline images must be located so OCR doesn't garble them as text
 - Old-style display fonts trip up Tesseract defaults
 - Scan quality varies within a single book
+- Many "scanned" TTRPG PDFs are actually hybrid: native embedded text with header/illustration images on top. The pipeline detects this per-page and routes between a native-text path (pymupdf.get_text with column-aware block sorting) and a full OCR path. Don't assume one or the other — classify per page.
 
 The naive `pdf2image + pytesseract.image_to_string(page)` pipeline that most blog tutorials describe **does not work** on this material. Region-based processing is the project's whole point.
 
