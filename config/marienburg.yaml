@@ -3,10 +3,13 @@ dpi: 150
 has_header: true
 header_height_pct: 0.08
 has_decorative_frame: false  # set true after Phase 0 if you find one
-column_count: 2
+column_count_max: 3
+column_gap_min_pct: 0.08
+mark_images_in_output: true
+min_image_area_px: 5000
+footer_height_pct: 0.05
 column_gutter_min_px: 40
-min_image_area_px: 30000
 body_psm: 6
 sidebar_psm: 4
 tesseract_lang: eng
-drop_pages: [0, 1, 2, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169]  # cover + title; revise after inspection
+drop_pages: [0, 1, 2, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169]  # cover + title + index + appendix

@@ -39,6 +39,12 @@ class BookProfile(BaseModel):
     native_block_sort: Literal["column_then_y", "y_only"] = "column_then_y"
     enable_ocr: bool = False  # opt-in; default off so old books need explicit profile flag
     native_text_min_chars: int = Field(default=500, ge=0)
+    # identify column number
+    column_count_max: int = Field(default=2, ge=1, le=4)
+    column_gap_min_pct: float = Field(default=0.08, ge=0.01, le=0.3)
+    mark_images_in_output: bool = True
+    min_image_area_px: int = Field(default=5000, ge=0)
+    footer_height_pct: float = Field(default=0.05, ge=0.0, le=0.5)
 
 class OcrWord(BaseModel):
     text: str; conf: float; bbox: BBox
