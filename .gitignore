@@ -1,0 +1,24 @@
+# Virtual environments
+.venv
+
+# Data (too large for git)
+data/
+
+# Jupyter artifacts
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
+
+# Environment files with secrets
+.env
+
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
