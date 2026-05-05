@@ -14,7 +14,7 @@ def _detect_column_count(x_centers: list[float], page_width: float,
     `gap_min_pct` of page width. n columns = n-1 such gaps + 1, capped at max_cols.
     Returns 1 when there's too little text to decide.
     """
-    if len(x_centers) < 4:
+    if len(x_centers) < 2:
         return 1
     sorted_xs = sorted(x_centers)
     gaps = [sorted_xs[i + 1] - sorted_xs[i] for i in range(len(sorted_xs) - 1)]
@@ -83,9 +83,13 @@ def _extract_native_one(page: fitz.Page, profile: BookProfile) -> Page:
         )
 
     # 2. Detect column count for THIS page, then assign each block to a column.
+    # Wide blocks (titles, rules) span the full page and don't define the column
+    # grid — exclude them from detection but keep them in candidates for output.
+    max_block_w = page_w * profile.block_width_max_pct
     x_centers = [(c[0] + c[2]) / 2 for c in candidates]
+    narrow_xs = [(c[0] + c[2]) / 2 for c in candidates if (c[2] - c[0]) <= max_block_w]
     n_cols = _detect_column_count(
-        x_centers, page_w,
+        narrow_xs, page_w,
         max_cols=profile.column_count_max,
         gap_min_pct=profile.column_gap_min_pct,
     )

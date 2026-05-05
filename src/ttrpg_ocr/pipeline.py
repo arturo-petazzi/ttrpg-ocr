@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import json
 import logging
 from pathlib import Path
 
@@ -35,3 +34,7 @@ def main() -> None:
     out_file = out_dir / "chapters.json"
     out_file.write_text(book.model_dump_json(indent=2))
     logging.getLogger(__name__).info("wrote %s", out_file)
+
+
+if __name__ == "__main__":
+    main()
