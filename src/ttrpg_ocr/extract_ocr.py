@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import logging
+import re
+import unicodedata
 from pathlib import Path
 
 import fitz
@@ -63,6 +65,18 @@ def _preprocess(img: Image.Image) -> Image.Image:
     return ImageEnhance.Contrast(gray).enhance(2.0)
 
 
+# ── text cleaning ─────────────────────────────────────────────────────────────
+
+def _clean(text: str) -> str:
+    # Normalize Unicode: ligatures (ﬁ→fi), curly quotes, em-dashes, etc.
+    text = unicodedata.normalize("NFKC", text)
+    # Rejoin words hyphenated at line breaks: "direc- tion" → "direction"
+    # Only merges when the second part starts lowercase (not a new sentence/proper noun)
+    text = re.sub(r"(\w+)-\s+([a-z]\w*)", r"\1\2", text)
+    # Collapse leftover whitespace
+    return re.sub(r"\s+", " ", text).strip()
+
+
 # ── OCR and block extraction ──────────────────────────────────────────────────
 
 def _ocr_blocks(img: Image.Image, dpi: int) -> list[OcrBlock] | None:
@@ -82,7 +96,7 @@ def _ocr_blocks(img: Image.Image, dpi: int) -> list[OcrBlock] | None:
 
     blocks: list[OcrBlock] = []
     for block_num, group in words.groupby("block_num"):
-        text = " ".join(str(t) for t in group["text"].tolist()).strip()
+        text = _clean(" ".join(str(t) for t in group["text"].tolist()))
         if not text:
             continue
         median_px = float(group["height"].median())
