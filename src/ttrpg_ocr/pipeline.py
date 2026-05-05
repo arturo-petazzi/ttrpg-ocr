@@ -9,7 +9,7 @@ import yaml
 from .schemas import BookProfile
 from .classify import classify_pages, PageStrategy
 from .extract_chapters import extract_chapters, ChapterBook
-from .extract_ocr import extract_ocr, OcrBook
+from .extract_ocr import extract_ocr, OcrChapterBook
 from common.pipeline import pipeline
 
 log = logging.getLogger(__name__)
@@ -36,10 +36,10 @@ def process_book(pdf_path: Path, profile: BookProfile,
         log.info("wrote %s (%d chapters)", out, len(chapters.chapters))
 
     if has_ocr:
-        ocr: OcrBook = extract_ocr(pdf_path, decisions, profile)
-        out = out_dir / "ocr_pages.json"
+        ocr: OcrChapterBook = extract_ocr(pdf_path, decisions, profile)
+        out = out_dir / "chapters.json"
         out.write_text(ocr.model_dump_json(indent=2))
-        log.info("wrote %s (%d pages)", out, len(ocr.pages))
+        log.info("wrote %s (%d chapters)", out, len(ocr.chapters))
 
 
 def main() -> None:

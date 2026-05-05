@@ -39,9 +39,15 @@ class OcrPage(BaseModel):
     blocks: list[OcrBlock]
 
 
-class OcrBook(BaseModel):
-    profile_name: str
+class OcrChapter(BaseModel):
+    title: str
+    page_start: int
     pages: list[OcrPage]
+
+
+class OcrChapterBook(BaseModel):
+    profile_name: str
+    chapters: list[OcrChapter]
 
 
 # ── image helpers ─────────────────────────────────────────────────────────────
@@ -120,16 +126,40 @@ def _extract_ocr_one(page: fitz.Page, profile: BookProfile) -> OcrPage | None:
     return OcrPage(page_num=page.number, blocks=blocks)
 
 
+# ── chapter grouping ──────────────────────────────────────────────────────────
+
+def _group_by_chapters(pages: list[OcrPage],
+                       profile: BookProfile) -> list[OcrChapter]:
+    if not profile.chapters:
+        return [OcrChapter(title="(Auto)", page_start=0, pages=pages)]
+
+    markers = sorted(profile.chapters, key=lambda c: c.page)
+    page_map = {p.page_num: p for p in pages}
+
+    chapters: list[OcrChapter] = []
+    for i, marker in enumerate(markers):
+        end = markers[i + 1].page if i + 1 < len(markers) else float("inf")
+        ch_pages = [page_map[pn] for pn in sorted(page_map)
+                    if marker.page <= pn < end]
+        if ch_pages:
+            chapters.append(OcrChapter(
+                title=marker.title,
+                page_start=marker.page,
+                pages=ch_pages,
+            ))
+    return chapters
+
+
 # ── step ──────────────────────────────────────────────────────────────────────
 
 @step("extract_ocr")
 def extract_ocr(pdf_path: Path, decisions: list[PageDecision],
-                profile: BookProfile) -> OcrBook:
+                profile: BookProfile) -> OcrChapterBook:
     targets = sorted(
         d.page_num for d in decisions if d.strategy == PageStrategy.SCAN_OCR
     )
     if not targets:
-        return OcrBook(profile_name=profile.name, pages=[])
+        return OcrChapterBook(profile_name=profile.name, chapters=[])
 
     pages: list[OcrPage] = []
     with fitz.open(pdf_path) as doc:
@@ -140,4 +170,7 @@ def extract_ocr(pdf_path: Path, decisions: list[PageDecision],
             log.info("p%03d: %s blocks",
                      pn, len(result.blocks) if result else "skipped")
 
-    return OcrBook(profile_name=profile.name, pages=pages)
+    return OcrChapterBook(
+        profile_name=profile.name,
+        chapters=_group_by_chapters(pages, profile),
+    )
