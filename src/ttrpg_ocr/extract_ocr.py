@@ -19,6 +19,8 @@ log = logging.getLogger(__name__)
 _MIN_PAGE_WORDS = 15
 # Words below this Tesseract confidence are discarded.
 _MIN_WORD_CONF = 30
+# Pages where mean confidence of accepted words is below this are full-page images.
+_MIN_PAGE_MEAN_CONF = 70
 
 
 # ── output schema ─────────────────────────────────────────────────────────────
@@ -74,7 +76,7 @@ def _ocr_blocks(img: Image.Image) -> list[OcrBlock] | None:
     data = data[data["text"].astype(str).str.strip() != ""]
     words = data[data["conf"] >= _MIN_WORD_CONF]
 
-    if len(words) < _MIN_PAGE_WORDS:
+    if len(words) < _MIN_PAGE_WORDS or words["conf"].mean() < _MIN_PAGE_MEAN_CONF:
         return None  # full-page image
 
     blocks: list[OcrBlock] = []
