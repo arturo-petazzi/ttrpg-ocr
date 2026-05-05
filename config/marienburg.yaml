@@ -13,3 +13,23 @@ body_psm: 6
 sidebar_psm: 4
 tesseract_lang: eng
 drop_pages: [0, 1, 2, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169]  # cover + title + index + appendix
+chapters:                                                                                                                                   
+    - {page: 3, title: "Introduction"}
+    - {page: 6, title: "The Wasteland"}
+    - {page: 22, title: "Diplomacy"}
+    - {page: 26, title: "Politics"}
+    - {page: 35, title: "Crime and Law"}
+    - {page: 43, title: "Religion and the religious life"}
+    - {page: 50, title: "Districts"}
+    - {page: 53, title: "Suiddock"}
+    - {page: 69, title: "Elftown"}
+    - {page: 80, title: "Guilderveld"}
+    - {page: 91, title: "Tempelwijk"}
+    - {page: 101, title: "Goudbeg"}
+    - {page: 109, title: "Kruiersmuur"}
+    - {page: 119, title: "Paleisbuurt"}
+    - {page: 125, title: "The Fortress-prison of Rijker's Isle"}
+    - {page: 130, title: "Adventure seeds"}
+    - {page: 133, title: "Adventure: The Lustrian Bubble"}
+
+

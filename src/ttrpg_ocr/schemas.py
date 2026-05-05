@@ -14,6 +14,10 @@ class RegionType(str, Enum):
 class BBox(BaseModel):
     x: int; y: int; w: int; h: int
 
+class ChapterMarker(BaseModel):
+    page: int
+    title: str
+
 class BookProfile(BaseModel):
     name: str
     dpi: int = 300
@@ -32,7 +36,8 @@ class BookProfile(BaseModel):
     caption_psm: int = 7
     tesseract_lang: str = "eng"
     # post-processing
-    drop_pages: list[int] = Field(default_factory=list)  # title page, ToC, etc.
+    drop_pages: list[int] = Field(default_factory=list)
+    chapters: list[ChapterMarker] | None = None  # if set, used instead of font-size detection
     # native text path
     native_text_min_chars: int = Field(default=500, ge=0)
     # The native-text path needs its own column logic too
@@ -42,6 +47,7 @@ class BookProfile(BaseModel):
     # identify column number
     column_count_max: int = Field(default=2, ge=1, le=4)
     column_gap_min_pct: float = Field(default=0.08, ge=0.01, le=0.3)
+    block_width_max_pct: float = Field(default=0.55, ge=0.1, le=1.0)
     mark_images_in_output: bool = True
     min_image_area_px: int = Field(default=5000, ge=0)
     footer_height_pct: float = Field(default=0.05, ge=0.0, le=0.5)
