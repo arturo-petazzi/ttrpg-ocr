@@ -4,14 +4,19 @@ import argparse
 import logging
 from pathlib import Path
 
+import yaml
+
 from .schemas import BookProfile
-from .profiles import load_profile
 from .classify import classify_pages, PageStrategy
 from .extract_chapters import extract_chapters, ChapterBook
 from .extract_ocr import extract_ocr, OcrBook
 from common.pipeline import pipeline
 
 log = logging.getLogger(__name__)
+
+
+def _load_profile(path: Path) -> BookProfile:
+    return BookProfile(**yaml.safe_load(path.open()))
 
 
 @pipeline("process_book")
@@ -47,7 +52,7 @@ def main() -> None:
     parser.add_argument("--out", type=Path, default=Path("data/processed"))
     args = parser.parse_args()
 
-    profile = load_profile(args.profile)
+    profile = _load_profile(args.profile)
     out_dir = args.out / profile.name
     process_book(args.pdf, profile, out_dir)
 
