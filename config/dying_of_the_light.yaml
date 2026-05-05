@@ -1,0 +1,18 @@
+name: WFRP - The Dying Of The Light
+enable_ocr: true
+header_height_pct: 0.08
+footer_height_pct: 0.05
+drop_pages: [0, 1, 2, 3, 127,128, 129]
+chapters:
+  - {page: 4,   title: "Introduction"}
+  - {page: 7,   title: "Error of the Moon"}
+  - {page: 25,  title: "A Watery Grave"}
+  - {page: 31,  title: "Wherever you may be"}
+  - {page: 39,  title: "Burn them! Burn them!"}
+  - {page: 47,  title: "Back to the Egg"}
+  - {page: 57,  title: "The place of Testing"}
+  - {page: 69,  title: "The Colony"}
+  - {page: 79,  title: "Transformation Moon"}
+  - {page: 91,  title: "Trial and Error"}
+  - {page: 101, title: "When Darkness Falls"}
+  - {page: 114, title: "Appendices"}

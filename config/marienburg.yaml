@@ -1,4 +1,6 @@
 name: WFRP - Marienburg Sold Down The River
+
+enable_ocr: false
 header_height_pct: 0.08
 footer_height_pct: 0.05
 drop_pages: [0, 1, 2, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169]

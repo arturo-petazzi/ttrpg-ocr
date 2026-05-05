@@ -35,9 +35,13 @@ def _classify_one(page: fitz.Page, profile: BookProfile) -> PageDecision:
         return PageDecision(page_num=n, strategy=PageStrategy.NATIVE_TEXT,
                             reason="native text", text_chars=text_chars)
 
-    # No native text — OCR stub; skip for now
+    if profile.enable_ocr:
+        return PageDecision(page_num=n, strategy=PageStrategy.SCAN_OCR,
+                            reason="no native text, OCR enabled",
+                            text_chars=text_chars)
+
     return PageDecision(page_num=n, strategy=PageStrategy.SKIP,
-                        reason="no native text (OCR not implemented)",
+                        reason="no native text, OCR disabled",
                         text_chars=text_chars)
 
 

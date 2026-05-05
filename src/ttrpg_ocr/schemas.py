@@ -16,6 +16,8 @@ class BookProfile(BaseModel):
     footer_height_pct: float = Field(default=0.05, ge=0.0, le=0.5)
     # Pages below this char count are treated as image/non-content pages
     native_text_min_chars: int = Field(default=100, ge=0)
+    enable_ocr: bool = False
+    ocr_dpi: int = Field(default=300, ge=72, le=600)
     drop_pages: list[int] = Field(default_factory=list)
     chapters: list[ChapterMarker] | None = None
 
