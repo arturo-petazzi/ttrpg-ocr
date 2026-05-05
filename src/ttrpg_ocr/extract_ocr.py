@@ -28,7 +28,8 @@ _MIN_PAGE_MEAN_CONF = 70
 class OcrBlock(BaseModel):
     block_num: int
     text: str
-    confidence: float  # mean word confidence for this block, 0-100
+    confidence: float    # mean word confidence for this block, 0-100
+    font_size_pt: float  # median word height converted to points; useful for heading detection
 
 
 class OcrPage(BaseModel):
@@ -64,7 +65,7 @@ def _preprocess(img: Image.Image) -> Image.Image:
 
 # ── OCR and block extraction ──────────────────────────────────────────────────
 
-def _ocr_blocks(img: Image.Image) -> list[OcrBlock] | None:
+def _ocr_blocks(img: Image.Image, dpi: int) -> list[OcrBlock] | None:
     """
     Run Tesseract and return blocks, or None if the page looks like a
     full-page illustration (too few accepted words).
@@ -84,10 +85,12 @@ def _ocr_blocks(img: Image.Image) -> list[OcrBlock] | None:
         text = " ".join(str(t) for t in group["text"].tolist()).strip()
         if not text:
             continue
+        median_px = float(group["height"].median())
         blocks.append(OcrBlock(
             block_num=int(block_num),
             text=text,
             confidence=round(float(group["conf"].mean()), 1),
+            font_size_pt=round(median_px / dpi * 72, 1),
         ))
     return blocks
 
@@ -96,7 +99,7 @@ def _extract_ocr_one(page: fitz.Page, profile: BookProfile) -> OcrPage | None:
     img = _rasterize(page, profile.ocr_dpi)
     img = _crop_margins(img, profile)
     img = _preprocess(img)
-    blocks = _ocr_blocks(img)
+    blocks = _ocr_blocks(img, profile.ocr_dpi)
     if blocks is None:
         log.debug("p%03d: skipped (full-page image or low confidence)", page.number)
         return None
