@@ -30,6 +30,9 @@ class ChapterBook(BaseModel):
     profile_name: str
     chapters: list[ChapterEntry]
 
+class NativePage(BaseModel):
+    page_num: int
+    text: str
 
 # ── font-tier detection ────────────────────────────────────────────────────────
 
@@ -219,6 +222,18 @@ def _extract_auto_chapters(doc: fitz.Document, profile: BookProfile,
             result.append(ChapterEntry(title=title, page_start=page_start,
                                        sections=sections))
     return result
+
+
+def native_page_texts(doc: fitz.Document, profile: BookProfile,
+                      native_pages: list[int], tiers: list[float]) -> list[NativePage]:
+    """Return native page-level text for pages extracted by the chapter pipeline."""
+    page_texts: dict[int, list[str]] = {pn: [] for pn in native_pages}
+    for pn in native_pages:
+        for _, text, _ in _page_spans(doc[pn], profile, tiers):
+            page_texts[pn].append(text)
+
+    return [NativePage(page_num=pn, text=" ".join(texts).strip())
+            for pn, texts in sorted(page_texts.items())]
 
 
 # ── step ──────────────────────────────────────────────────────────────────────
