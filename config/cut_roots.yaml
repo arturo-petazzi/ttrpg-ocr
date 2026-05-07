@@ -1,0 +1,9 @@
+name: Cut Roots
+
+enable_ocr: true
+ocr_dpi: 200
+native_text_min_chars: 500
+header_height_pct: 0.08
+footer_height_pct: 0.05
+column_count_max: 2
+drop_pages: []

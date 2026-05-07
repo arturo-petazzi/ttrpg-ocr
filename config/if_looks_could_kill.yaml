@@ -1,0 +1,5 @@
+name: WFRP - If looks could kill
+enable_ocr: false
+header_height_pct: 0.08
+footer_height_pct: 0.05
+drop_pages: [0, 1, 24, 25, 27]

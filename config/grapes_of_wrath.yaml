@@ -1,0 +1,12 @@
+name: WFRP2E - Grapes of Wrath
+enable_ocr: true
+header_height_pct: 0.08
+footer_height_pct: 0.05
+drop_pages: [2,4]
+chapters:
+  - {page: 0,   title: "Beginning the Adventure"}
+  - {page: 1,   title: "The Village of Pritzstock"}
+  - {page: 10,  title: "Running the Adventure"}
+  - {page: 12,  title: "The Wizard in the Woods"}
+  - {page: 14,  title: "The Adventurers' Lair"}
+  - {page: 16,  title: "Concluding the Adventure"}

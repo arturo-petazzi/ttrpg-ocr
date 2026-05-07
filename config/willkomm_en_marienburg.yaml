@@ -1,0 +1,31 @@
+name: WFRP - Willkomm en Marienburg
+
+enable_ocr: true
+header_height_pct: 0.08
+footer_height_pct: 0.05
+drop_pages: [9,11,30,35,46]
+chapters:
+  - {page: 0,   title: "Willkomm en Marienburg"}
+  - {page: 4,   title: "The Wasteland"}
+  - {page: 8,   title: "The Suiddock"}
+  - {page: 10,  title: "The Pelican's Perch"}
+  - {page: 16,  title: "The Suiddock Temple"}
+  - {page: 18,  title: "The Stevedores' and Teamsters' Guild"}
+  - {page: 20,  title: "Granny Hetta"}
+  - {page: 22,  title: "Haagen's Wharf"}
+  - {page: 25,  title: "The Brotherhood of Seamen and Pilots"}
+  - {page: 27,  title: "The Rivermen's Association"}
+  - {page: 29,  title: "The Wasteland's Import Export Exchange"}
+  - {page: 34,  title: "The Marienburg Home for Foundlings"}
+  - {page: 38,  title: "Van Arzneier's Floracopoeia"}
+  - {page: 40,  title: "The Edelmoed Temple"}
+  - {page: 43,  title: "Kluger's EMporium"}
+  - {page: 45,  title: "Wilhelm Rotkopf, Alchemist"}
+  - {page: 49,  title: "Lisette's Leather Goods"}
+  - {page: 52,  title: "The Watch House"}
+  - {page: 54,  title: "Dr Markus Puttlangs"}
+  - {page: 56,  title: "Old Mother Crumhorn"}
+  - {page: 61,  title: "Hassan's"}
+  - {page: 63,  title: "The Sign of the Quill"}
+  - {page: 65,  title: "Dagblag's Wholesale Leather"}
+  - {page: 67,  title: "Loweijer's Tannery"}

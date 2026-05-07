@@ -1,0 +1,14 @@
+name: WFRP - A Dead Man's Debt
+enable_ocr: false
+header_height_pct: 0.08
+footer_height_pct: 0.05
+drop_pages: [0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,67,68]
+chapters:
+  - {page: 49, title: "Introduction"}
+  - {page: 50, title: "Part 1 - Reuter Residence"}
+  - {page: 53, title: "Part 2 - Finding Out the Truth"}
+  - {page: 57, title: "Part 3A - Finding the Sword of Ind"}
+  - {page: 61, title: "Part 3B Talking to the Sword of Ind"}
+  - {page: 62, title: "Part 4 - Confronting Brauchgeldt"}
+  - {page: 64, title: "Part 5 - Back with the Reuters"}
+

@@ -1,0 +1,5 @@
+name: WFRP1E - Worse than the Disease
+enable_ocr: false
+header_height_pct: 0.08
+footer_height_pct: 0.05
+drop_pages: [8,9]

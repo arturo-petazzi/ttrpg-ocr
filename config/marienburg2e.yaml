@@ -1,0 +1,32 @@
+name: WFRP2E - Marienburg
+
+enable_ocr: true
+header_height_pct: 0.08
+footer_height_pct: 0.05
+drop_pages: [184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200]
+chapters:
+  - {page: 2,   title: "Canals"}
+  - {page: 2,   title: "Catacombs"}
+  - {page: 3,   title: "Doodkanaal"}
+  - {page: 10,  title: "Elfsgemeente"}
+  - {page: 10,  title: "Goudberg"}
+  - {page: 29,  title: "Guilderveld"}
+  - {page: 42,  title: "Handlelaarmarkt"}
+  - {page: 42,  title: "Kruiersmuur"}
+  - {page: 67,  title: "Noordmuur"}
+  - {page: 68,  title: "Ostmuur"}
+  - {page: 68,  title: "Oudgeldwijk"}
+  - {page: 69,  title: "Paleisbuurt"}
+  - {page: 77,  title: "Rijker's Isle"}
+  - {page: 77,  title: "Rijkspoort"}
+  - {page: 77,  title: "Schattinwaard"}
+  - {page: 78,  title: "Suiddock"}
+  - {page: 153, title: "Tempelwijk"}
+  - {page: 166, title: "Vlakland"}
+  - {page: 166, title: "The Vloedmuur"}
+  - {page: 167, title: "Winkelmarkt"}
+  - {page: 172, title: "The Honourable Company of Lamplighters and Watchmen"}
+  - {page: 172, title: "The Knights of Purity"}
+  - {page: 175, title: "The League of Gentlemen Enterpreneurs"}
+  - {page: 181, title: "List of inns and Taverns"}
+  - {page: 182, title: "List of people"}

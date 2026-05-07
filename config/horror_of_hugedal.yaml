@@ -1,0 +1,13 @@
+name: WFRP - Horror of Hugedal
+
+enable_ocr: True
+header_height_pct: 0.08
+footer_height_pct: 0.05
+drop_pages: []
+chapters:
+  - {page: 1,   title: "Getting Started"}
+  - {page: 2,   title: "Background"}
+  - {page: 3,   title: "Part 1: The Bandit Attack"}
+  - {page: 7,   title: "Part 2: A Town called Malaise"}
+  - {page: 25,  title: "Part 3: The Cavalcade comes to Town"}
+  - {page: 34,  title: "Appendix"}

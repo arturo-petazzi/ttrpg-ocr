@@ -1,0 +1,6 @@
+name: adventure - The Witch Hunter Cometh
+
+enable_ocr: false
+header_height_pct: 0.08
+footer_height_pct: 0.05
+drop_pages: []

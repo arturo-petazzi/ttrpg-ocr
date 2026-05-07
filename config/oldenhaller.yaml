@@ -1,0 +1,11 @@
+name: WFRP - The OldenHaller Contract
+enable_ocr: false
+header_height_pct: 0.08
+footer_height_pct: 0.05
+drop_pages: [0, 1, 2, 31]
+chapters:
+  - {page: 3,   title: "Introduction"}
+  - {page: 4,   title: "Adventure Summary"}
+  - {page: 5,   title: "Welcome To Nuln"}
+  - {page: 17,  title: "The Asylum"}
+  - {page: 24,  title: "The Sewers and The Huydermans"}
