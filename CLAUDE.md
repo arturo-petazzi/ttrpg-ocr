@@ -455,6 +455,18 @@ Eval runs as a pytest test. Regressions > 0.5% CER block merge.
 - Web UI, API, or any deployment concerns.
 - `unstructured.io` as the main backbone.
 
+## Batch config generation
+
+When asked to generate yaml profiles from inspection JSON files:
+- Read all *_inspect.json files in data/inspect/
+- Use config/marienburg.yaml as the schema reference
+- Determine enable_ocr from text_chars distribution
+- Calculate dpi from image pixel dimensions vs page size in points
+- Leave drop_pages empty — list candidates separately
+- Name profile files after the PDF stem
+- Print a summary table after all profiles are written
+- Suggest chapter_start_pages only if you have a confidence >80%
+
 ---
 
 ## Reference

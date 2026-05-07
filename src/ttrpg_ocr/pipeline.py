@@ -68,6 +68,14 @@ def _merge_native_and_ocr(native_book: ChapterBook,
 
     return merged
 
+def inspect_cmd() -> None:
+    import argparse, json
+    parser = argparse.ArgumentParser()
+    parser.add_argument("folder", type=Path)
+    parser.add_argument("--out", type=Path, default=Path("data/inspect"))
+    args = parser.parse_args()
+    from .inspect import inspect_folder
+    inspect_folder(args.folder, args.out)
 
 @pipeline("process_book")
 def process_book(pdf_path: Path, profile: BookProfile,
@@ -127,16 +135,47 @@ def main() -> None:
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     parser = argparse.ArgumentParser(
-        description="Extract structured text from a TTRPG PDF.")
-    parser.add_argument("pdf", type=Path)
-    parser.add_argument("--profile", type=Path, required=True)
-    parser.add_argument("--out", type=Path, default=Path("data/processed"))
+        description="Extract structured text from TTRPG PDFs.")
+    parser.add_argument("input", type=Path, help="PDF file or folder of PDFs")
+    parser.add_argument("--profile", type=Path, required=True, help="Profile YAML file or directory of profiles")
+    parser.add_argument("--out", type=Path, default=Path("data/processed"), help="Output directory")
+    parser.add_argument("--batch", action="store_true", help="Process all PDFs in the input folder")
     args = parser.parse_args()
 
-    profile = _load_profile(args.profile)
-    out_dir = args.out / profile.name
-    process_book(args.pdf, profile, out_dir)
+    if args.batch:
+        batch_run(args.input, args.profile, args.out)
+    else:
+        profile = _load_profile(args.profile)
+        out_dir = args.out / profile.name
+        process_book(args.input, profile, out_dir)
 
+
+def batch_run(folder: Path, profiles_dir: Path, out_dir: Path,
+              n_workers: int = 4) -> None:
+    """Run extraction on all PDFs in a folder that have a matching profile."""
+    from multiprocessing import Pool
+    from tqdm import tqdm
+
+    jobs = []
+    for pdf in sorted(folder.glob("*.pdf")):
+        profile_path = profiles_dir / f"{pdf.stem}.yaml"
+        if not profile_path.exists():
+            print(f"SKIP {pdf.name} — no profile found at {profile_path}")
+            continue
+        jobs.append((pdf, profile_path, out_dir))
+
+    print(f"Found {len(jobs)} PDFs with matching profiles")
+
+    with Pool(n_workers) as pool:
+        list(tqdm(pool.imap(_batch_worker, jobs), total=len(jobs)))
+
+
+
+def _batch_worker(args: tuple) -> None:
+    pdf_path, profile_path, out_dir = args
+    profile = _load_profile(profile_path)
+    book_out = out_dir / profile.name
+    process_book(pdf_path, profile, book_out)
 
 if __name__ == "__main__":
     main()

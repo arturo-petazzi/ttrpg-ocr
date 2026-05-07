@@ -31,3 +31,4 @@ packages = ["src/ttrpg_ocr"]
 
 [project.scripts]
 ttrpg-ocr = "ttrpg_ocr.pipeline:main"
+ttrpg-inspect = "ttrpg_ocr.pipeline:inspect_cmd"
