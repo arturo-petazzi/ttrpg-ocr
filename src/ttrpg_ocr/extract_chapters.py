@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+import unicodedata
 from collections import Counter
 from pathlib import Path
 from statistics import mode
@@ -106,6 +108,20 @@ def _span_tier(size: float, tiers: list[float], tolerance: float = 0.4) -> int |
     return None
 
 
+# ── native text cleaning ─────────────────────────────────────────────────────
+
+_C1_CTRL_RE = re.compile(r'[\x80-\x9f]')       # unmapped symbol-font glyphs → bullet
+_PUA_RE = re.compile(r'[-]')        # decorative private-use area → strip
+
+
+def _clean_native_text(text: str) -> str:
+    text = unicodedata.normalize("NFKC", text)  # ligatures, curly quotes normalised
+    text = text.replace('\xad', '')             # soft hyphen (PDF layout artefact)
+    text = _C1_CTRL_RE.sub('•', text)           # e.g. Wingdings2 \x90 bullet glyph
+    text = _PUA_RE.sub('', text)                # e.g. Wingdings-Regular filled dots
+    return re.sub(r'\s+', ' ', text).strip()
+
+
 # ── column detection ──────────────────────────────────────────────────────────
 
 def _detect_column_count(x_centers: list[float], page_width: float,
@@ -171,8 +187,8 @@ def _page_spans(page: fitz.Page, profile: BookProfile,
     result = []
     for block in blocks:
         for line in block["lines"]:
-            text = "".join(s["text"] for s in line["spans"]).strip()
-            if not text or text.isdigit():
+            text = _clean_native_text("".join(s["text"] for s in line["spans"]))
+            if not text or text.isdigit() or not text.replace('•', '').strip():
                 continue
             sizes = [s["size"] for s in line["spans"] if s["text"].strip()]
             if not sizes:

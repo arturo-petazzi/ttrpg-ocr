@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import pytest
-from ttrpg_ocr.extract_chapters import _assign_columns, _detect_column_count
+from ttrpg_ocr.extract_chapters import _assign_columns, _clean_native_text, _detect_column_count
 
 
 class TestDetectColumnCount:
@@ -86,3 +86,32 @@ class TestAssignColumns:
         x = [1.0, 2.0, 3.0, 400.0, 401.0, 402.0]
         cols = _assign_columns(x, 2)
         assert len(cols) == len(x)
+
+
+class TestCleanNativeText:
+    def test_c1_bullet_replaced(self):
+        assert _clean_native_text('\x90 A player or GM') == '• A player or GM'
+
+    def test_multiple_c1_bullets(self):
+        assert _clean_native_text('\x90 \x90 Keep this book') == '• • Keep this book'
+
+    def test_solo_c1_becomes_bullet(self):
+        # The caller filters this out; function itself just maps it
+        assert _clean_native_text('\x90') == '•'
+
+    def test_pua_prefix_stripped(self):
+        # Wingdings-Regular filled-dot rating glyphs before action name
+        assert _clean_native_text('hunt') == 'hunt'
+
+    def test_soft_hyphen_removed(self):
+        assert _clean_native_text('unwanted\xad—') == 'unwanted—'
+
+    def test_clean_text_unchanged(self):
+        s = 'Blades in the Dark is a game about scoundrels.'
+        assert _clean_native_text(s) == s
+
+    def test_whitespace_collapsed(self):
+        assert _clean_native_text('hello   world') == 'hello world'
+
+    def test_strips_leading_trailing_space(self):
+        assert _clean_native_text('  hello  ') == 'hello'
