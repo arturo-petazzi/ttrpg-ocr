@@ -1,0 +1,13 @@
+name: WFRP - Forest of Hate
+
+enable_ocr: False
+header_height_pct: 0.08
+footer_height_pct: 0.05
+drop_pages: [0,1]
+chapters:
+  - {page: 2,   title: "Forest of Hate"}
+  - {page: 5,   title: "Figures of Note"}
+  - {page: 8,   title: "Beginning the Adventure"}
+  - {page: 11,  title: "Adventure Encounters"}
+  - {page: 20,  title: "Adventure Locations"}
+  - {page: 32,  title: "Appendix"}

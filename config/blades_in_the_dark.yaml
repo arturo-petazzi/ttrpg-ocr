@@ -1,0 +1,21 @@
+name: Blades in the Dark
+
+enable_ocr: false
+ocr_dpi: 300
+native_text_min_chars: 500
+header_height_pct: 0.08
+footer_height_pct: 0.05
+column_count_max: 2
+drop_pages: [0,1,2,3,4,5,6,7,8]
+chapters:
+  - {page: 9,   title: "The Basics"}
+  - {page: 59,  title: "Characters"}
+  - {page: 99,  title: "The Characters"}
+  - {page: 133, title: "The Score"}
+  - {page: 153, title: "Downtime"}
+  - {page: 169, title: "How to Play"}
+  - {page: 195, title: "Running the Game"}
+  - {page: 217, title: "Strange Forces"}
+  - {page: 237, title: "Changing the Game"}
+  - {page: 245, title: "Doskvol"}
+  - {page: 316, title: "The Shattered Isles"}
