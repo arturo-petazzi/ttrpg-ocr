@@ -5,7 +5,7 @@ from pathlib import Path
 from statistics import mode
 
 import fitz
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from .schemas import BookProfile, ChapterMarker
 from .classify import PageDecision, PageStrategy
@@ -14,10 +14,16 @@ from common.pipeline import step
 
 # ── output schema ─────────────────────────────────────────────────────────────
 
+class SectionSpan(BaseModel):
+    page_num: int
+    text: str
+
+
 class SectionEntry(BaseModel):
     title: str
     page_start: int
-    text: str
+    text: str                                    # joined string; kept for backwards compat
+    spans: list[SectionSpan] = Field(default_factory=list)
 
 
 class ChapterEntry(BaseModel):
@@ -100,6 +106,36 @@ def _span_tier(size: float, tiers: list[float], tolerance: float = 0.4) -> int |
     return None
 
 
+# ── column detection ──────────────────────────────────────────────────────────
+
+def _detect_column_count(x_centers: list[float], page_width: float,
+                          max_cols: int, gap_min_pct: float) -> int:
+    """Count columns by finding large x-gaps between sorted block centers."""
+    if len(x_centers) < 4:
+        return 1
+    sorted_x = sorted(x_centers)
+    min_gap = gap_min_pct * page_width
+    n_gaps = sum(
+        1 for i in range(len(sorted_x) - 1)
+        if sorted_x[i + 1] - sorted_x[i] >= min_gap
+    )
+    return min(n_gaps + 1, max_cols)
+
+
+def _assign_columns(x_centers: list[float], n_cols: int) -> list[int]:
+    """Assign a column index (0-based) to each x_center using the n_cols-1 largest gaps."""
+    if n_cols == 1:
+        return [0] * len(x_centers)
+    sorted_x = sorted(x_centers)
+    gaps = sorted(
+        ((sorted_x[i + 1] - sorted_x[i], (sorted_x[i] + sorted_x[i + 1]) / 2)
+         for i in range(len(sorted_x) - 1)),
+        reverse=True,
+    )
+    boundaries = sorted(mid for _, mid in gaps[: n_cols - 1])
+    return [sum(1 for b in boundaries if x >= b) for x in x_centers]
+
+
 # ── page text extraction ───────────────────────────────────────────────────────
 
 def _page_spans(page: fitz.Page, profile: BookProfile,
@@ -107,19 +143,33 @@ def _page_spans(page: fitz.Page, profile: BookProfile,
     """
     Return (tier_index, text, page_num) for each line on the page.
     tier_index=None means body text. Page numbers and empty lines are dropped.
-    Header/footer strips are excluded.
+    Header/footer strips are excluded. Blocks are sorted left-column-first.
     """
     h = page.rect.height
     header_y = h * profile.header_height_pct
     footer_y = h * (1 - profile.footer_height_pct)
     pn = page.number
 
+    blocks = [
+        b for b in page.get_text("dict")["blocks"]
+        if b.get("type") == 0
+        and b["bbox"][1] >= header_y
+        and b["bbox"][3] <= footer_y
+    ]
+
+    if len(blocks) >= 4:
+        page_width = page.rect.width
+        x_centers = [(b["bbox"][0] + b["bbox"][2]) / 2 for b in blocks]
+        n_cols = _detect_column_count(
+            x_centers, page_width, profile.column_count_max, profile.column_gap_min_pct
+        )
+        col_indices = _assign_columns(x_centers, n_cols)
+        order = sorted(range(len(blocks)),
+                       key=lambda i: (col_indices[i], blocks[i]["bbox"][1]))
+        blocks = [blocks[i] for i in order]
+
     result = []
-    for block in page.get_text("dict")["blocks"]:
-        if block.get("type") != 0:
-            continue
-        if block["bbox"][1] < header_y or block["bbox"][3] > footer_y:
-            continue
+    for block in blocks:
         for line in block["lines"]:
             text = "".join(s["text"] for s in line["spans"]).strip()
             if not text or text.isdigit():
@@ -137,18 +187,24 @@ def _page_spans(page: fitz.Page, profile: BookProfile,
 
 def _build_sections(spans: list[tuple[int | None, str, int]]) -> list[SectionEntry]:
     """Group (tier, text, page) spans into SectionEntry list."""
-    sections: list[list] = []  # [title, page_start, [body_fragments]]
+    sections: list[list] = []  # [title, page_start, [body_texts], [(page_num, text)]]
 
     for tier, text, pn in spans:
         if tier is not None:
-            sections.append([text, pn, []])
+            sections.append([text, pn, [], []])
         else:
             if not sections:
-                sections.append(["(Introduction)", pn, []])
+                sections.append(["(Introduction)", pn, [], []])
             sections[-1][2].append(text)
+            sections[-1][3].append((pn, text))
 
     return [
-        SectionEntry(title=s[0], page_start=s[1], text=" ".join(s[2]).strip())
+        SectionEntry(
+            title=s[0],
+            page_start=s[1],
+            text=" ".join(s[2]).strip(),
+            spans=[SectionSpan(page_num=pn, text=t) for pn, t in s[3]],
+        )
         for s in sections
         if s[2]
     ]

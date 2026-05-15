@@ -20,6 +20,8 @@ class BookProfile(BaseModel):
     ocr_dpi: int = Field(default=300, ge=72, le=600)
     drop_pages: list[int] = Field(default_factory=list)
     chapters: list[ChapterMarker] | None = None
+    column_count_max: int = Field(default=2, ge=1, le=4)
+    column_gap_min_pct: float = Field(default=0.08, ge=0.01, le=0.3)
 
 
 # ── kept for the future OCR pipeline path ────────────────────────────────────
